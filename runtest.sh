@@ -34,22 +34,15 @@ done
 
 echo -e "\n\033[34m\033[1mRunning tests on \033[103m$EXE\e[0m"
 
-let "x = 1"
-for i in $(ls tests/*.in); do
-	echo -ne "\n\033[34mtest: $i: \e[0m"
-	if (( x < 10 ))
+regmax=".*([0-9]{2}).*"
+for i in $(ls tests/*.in)
+do
+	if [[ $i =~ $regmax ]] 
 	then
-	./$EXE <$i >tests/t0$x.myout 2>tests/t0$x.myerr
+		x="${BASH_REMATCH[1]}"
+	echo -ne "\n\033[34mtest: $i: \e[0m"
+	./$EXE <$i >tests/t$x.myout 2>tests/t0$x.myerr
 
-		if [[ $(diff  tests/t0$x.myout tests/t0$x.out) ]]
-		then
-			echo -e " \033[31m Failed \e[0m"
-		else
-			echo -e " \033[32m Success \e[0m"
-		fi
-
-	else
-	./$EXE <$i >tests/t$x.myout 2>tests/t$x.myerr
 		if [[ $(diff  tests/t$x.myout tests/t$x.out) ]]
 		then
 			echo -e " \033[31m Failed \e[0m"
@@ -57,5 +50,5 @@ for i in $(ls tests/*.in); do
 			echo -e " \033[32m Success \e[0m"
 		fi
 	fi
-	let "x++"
+
 done
