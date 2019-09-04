@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #This script was created by Ramsfield
 #For the sole purpose of testing and directing STDIN Programs
 #Any concerns with this script can be directed to:
@@ -40,14 +40,24 @@ do
 	if [[ $i =~ $regmax ]] 
 	then
 		x="${BASH_REMATCH[1]}"
-	echo -ne "\n\033[34mtest: $i: \e[0m"
-	./$EXE <$i >tests/t$x.myout 2>tests/t0$x.myerr
+		echo -ne "\n\033[34mtest: $i: \e[0m"
+		./$EXE <$i >tests/t$x.myout 2>tests/t$x.myerr
 
-		if [[ $(diff  tests/t$x.myout tests/t$x.out) ]]
+		if [[ $(ls tests/t$x.err 2> /dev/null) ]]
 		then
-			echo -e " \033[31m Failed \e[0m"
+			if  [[ $(diff tests/t$x.myout tests/t$x.out 2> /dev/null) || $(diff tests/t$x.myerr tests/t$x.err 2> /dev/null) ]];
+			then
+				echo -e " \033[31m Failed \e[0m"
+			else
+				echo -e " \033[32m Success \e[0m"
+			fi
 		else
-			echo -e " \033[32m Success \e[0m"
+			if [[ $(diff  tests/t$x.myout tests/t$x.out 2> /dev/null) ]]
+			then
+				echo -e " \033[31m Failed \e[0m"
+			else
+				echo -e " \033[32m Success \e[0m"
+			fi
 		fi
 	fi
 
